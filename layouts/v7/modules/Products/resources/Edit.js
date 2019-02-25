@@ -450,12 +450,85 @@ Vtiger_Edit_Js("Products_Edit_Js", {
         registerImageChangeEvent : function() {
             
         },
+
+    initProducts : function() {
+
+    	var codigo = $("[name='productcode']");
+    	var nivel = $("[name='productcategory']");
+    	var grado = $("[name='cf_874']");
+    	var seccion = $("[name='cf_876']");
+    	var curso = $("[name='cf_878']");
+    	var anio = $("[name='cf_880']");
+
+    	codigo.blur(this.generarNombre);
+    	anio.blur(this.generarNombre);
+    	nivel.change(this.generarNombre);
+    	grado.change(this.generarNombre);
+    	seccion.change(this.generarNombre);
+    	curso.change(this.generarNombre);
+    	
+    	$("#Products_editView_fieldName_discontinued").change(function(e){
+    		var checked = $(this).is(":checked");
+    		console.log("checked",checked)
+    		if ( checked ) {
+    			$("#Products_editView_fieldName_start_date").removeAttr("disabled");
+    			$("#Products_editView_fieldName_start_date").attr("required",true);
+    			$("#Products_editView_fieldName_expiry_date").removeAttr("required");
+    			$("#Products_editView_fieldName_expiry_date").attr("disabled",true);
+    			$("#Products_editView_fieldName_cf_882").attr("disabled",true);
+    			$("#Products_editView_fieldName_cf_882").removeAttr("required");
+    		} else {
+    			$("#Products_editView_fieldName_start_date").removeAttr("required");
+    			$("#Products_editView_fieldName_start_date").attr("disabled",true);
+    			$("#Products_editView_fieldName_expiry_date").removeAttr("disabled");
+    			$("#Products_editView_fieldName_expiry_date").attr("required",true);
+    			$("#Products_editView_fieldName_cf_882").attr("required",true);
+    			$("#Products_editView_fieldName_cf_882").removeAttr("disabled");
+    		}
+    	});
+    	$("#Products_editView_fieldName_discontinued").trigger("change")
+    },
+
+    generarNombre: function (){
+    	var codigo = $("[name='productcode']");
+    	var nivel = $("[name='productcategory']");
+    	var grado = $("[name='cf_874']");
+    	var seccion = $("[name='cf_876']");
+    	var curso = $("[name='cf_878']");
+    	var nombre = $("[name='productname']");
+    	var anio = $("[name='cf_880']");
+    	var cod = '';
+    	var arr = new Array();
+    	if ( codigo.val().trim() != '' ) {
+    		arr.push("["+codigo.val().trim()+"]");
+    		// cod = codigo.val().trim()." - ";
+    	}
+    	if ( anio.val().trim() != '' ) {
+    		arr.push("AÑO: "+anio.val().trim());
+    	}
+    	if ( nivel.val().trim() != '' ) {
+    		arr.push("NIVEL: "+nivel.val().trim());
+    	}
+    	if ( grado.val().trim() != '' ) {
+    		arr.push("GRADO: "+grado.val().trim());
+    	}
+    	if ( seccion.val().trim() != '' ) {
+    		arr.push("SECC: "+seccion.val().trim());
+    	}
+    	if ( curso.val().trim() != '' ) {
+    		arr.push("CURSO: "+curso.val().trim());
+    	}
+
+    	nombre.val(arr.join(" - "));
+    },
+
 	registerBasicEvents : function(container) {
             this._super(container);
             this.registerTaxEvents(container);
             this.registerEventForMoreCurrencies();
             this.registerEventForUnitPrice();
             this.registerRecordPreSaveEvent();
+            this.initProducts();
 	},
 })
 

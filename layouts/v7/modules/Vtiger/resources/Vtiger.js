@@ -864,6 +864,10 @@ Vtiger.Class('Vtiger_Index_Js', {
 			inputElement.data('value','');
 			inputElement.val("");
 			parentTdElement.find('input[name="'+fieldName+'"]').val("");
+			//--Henry: para incidencias:
+			if ( parentTdElement.find('input[name="'+fieldName+'"]').data("json") != undefined ) {
+				parentTdElement.find('input[name="'+fieldName+'"]').data("json",null);
+			}
 			element.addClass('hide');
 			element.trigger(Vtiger_Edit_Js.referenceDeSelectionEvent);
 		});
@@ -918,9 +922,22 @@ Vtiger.Class('Vtiger_Index_Js', {
 		var params = this.getPopUpParams(parentElem);
 		params.view = 'Popup';
 
+
 		var isMultiple = false;
 		if(params.multi_select) {
 				isMultiple = true;
+		}
+
+		console.log("parentElem", parentElem, "params", params)
+		if ( app.getModuleName() == 'HelpDesk' && params.module == 'Products' ) {
+			params.apoderado_id = $("[name='parent_id']").val();
+			params.alumno_id = $("[name='contact_id']").val();
+			if ( $("[name='contact_id']").data("json") != undefined ) {
+				params.alumno_nivel = $("[name='contact_id']").data("json").almsecc_tks_nivel;
+				params.alumno_grado = $("[name='contact_id']").data("json").almsecc_tks_grado;
+				params.alumno_seccion = $("[name='contact_id']").data("json").almsecc_tks_seccion;
+				params.alumno_anio = $("[name='contact_id']").data("json").almsecc_tks_ano;
+			}
 		}
 
 		var sourceFieldElement = jQuery('input[class="sourceField"]',parentElem);
@@ -1519,6 +1536,145 @@ Vtiger.Class('Vtiger_Index_Js', {
 		container.find('.sourceField').on(Vtiger_Edit_Js.postReferenceSelectionEvent,function(e,result){
 			var dataList = result.data;
 			var element = jQuery(e.currentTarget);
+
+			//--henry, trabjar con el response de popup
+			console.log("dataList",dataList)
+			if ( dataList.id == undefined ) { // viene del popup
+				$.each(dataList, function(k,v){
+					obj = v;
+					var mod = v.module;
+					mod = mod.toLowerCase();
+					mod = mod.substring(0, mod.length-1);
+					if ( v.info[mod+"id"] ) {
+						obj["id"] = v.info[mod+"id"];
+					} else {
+						obj["id"] = v.info["id"];
+					}
+				});
+			} else { // viene del buscador
+				obj = dataList;
+				obj.name = dataList.label;
+			}
+			
+			console.log("Popup seleccionado",obj);
+			
+			if ( app.getModuleName() == 'Apdalm' ) {
+				if ( element.attr("name") == 'apdalm_tks_apoderado' ) { // 
+					var params = {
+						module: 'Vtiger',
+						source_module: 'Accounts',
+						action: 'GetData',
+						record: obj.id
+					};
+					app.helper.showProgress();
+					app.request.get({data: params}).then(function (error, data) {
+						if ( data.success ) {
+							var acc = data.data;
+							$("#Apdalm_editView_fieldName_apdalm_tks_nrodocumentoapodera").val(acc.siccode);
+						}
+						app.helper.hideProgress();
+					});
+				}
+				if ( element.attr("name") == 'apdalm_tks_alumno' ) { // 
+					var params = {
+						module: 'Vtiger',
+						source_module: 'Contacts',
+						action: 'GetData',
+						record: obj.id
+					};
+					app.helper.showProgress();
+					app.request.get({data: params}).then(function (error, data) {
+						if ( data.success ) {
+							var cont = data.data;
+							$("#Apdalm_editView_fieldName_apdalm_tks_codigoalumno").val(cont.cf_872);
+						}
+						app.helper.hideProgress();
+					});
+				}
+			} else if ( app.getModuleName() == 'Almsecc' ) {
+				if ( element.attr("name") == 'almsecc_tks_alumno' ) { // 
+					var params = {
+						module: 'Vtiger',
+						source_module: 'Contacts',
+						action: 'GetData',
+						record: obj.id
+					};
+					app.helper.showProgress();
+					app.request.get({data: params}).then(function (error, data) {
+						if ( data.success ) {
+							var cont = data.data;
+							$("#Almsecc_editView_fieldName_almsecc_tks_codigoalumno").val(cont.cf_872);
+						}
+						app.helper.hideProgress();
+					});
+				}
+			} else if ( app.getModuleName() == 'HelpDesk' ) {
+				if ( element.attr("name") == 'contact_id' ) { // 
+					var params = {
+			            module: 'Contacts',
+			            source_module: 'Contacts',
+			            action: 'GetDataIncidencia',
+			            record: obj.id
+			        };
+			        app.helper.showProgress();
+			        app.request.get({data: params}).then(function (error, data) {
+			            if ( data.success ) {
+			                var data = data.data;
+			                var alumno_seccion = data.alumno_seccion;
+			                if ( alumno_seccion.id != null ) {
+			                    if ($("[name='contact_id']").data('json') == undefined) {
+			                    	$("[name='contact_id']").attr('data-json',JSON.stringify(alumno_seccion));
+			                    } else {
+			                    	$("[name='contact_id']").data('json', alumno_seccion);
+			                    }
+			                } else {
+			                	app.helper.showAlertNotification({'message': "El alumno no tiene Sección!"});
+			                }
+			            }
+			            app.helper.hideProgress();
+			        });
+				}
+				if ( element.attr("name") == 'parent_id' ) { // 
+					var params = {
+			            module: 'Vtiger',
+			            source_module: 'Accounts',
+			            action: 'GetData',
+			            record: obj.id
+			        };
+			        app.helper.showProgress();
+			        app.request.get({data: params}).then(function (error, data) {
+			            if ( data.success ) {
+			                var data = data.data;
+			                if ( data != null ) {
+			                	if ($("[name='contact_id']").data('json') == undefined) {
+			                    	$("[name='parent_id']").attr('data-json',JSON.stringify(data));
+			                    } else {
+			                    	$("[name='parent_id']").data('json', data);
+			                    }
+			                }
+			            }
+			            app.helper.hideProgress();
+			        });
+				}
+				if ( element.attr("name") == 'product_id' ) { // 
+					var params = {
+			            module: 'Vtiger',
+			            source_module: 'Products',
+			            action: 'GetData',
+			            record: obj.id
+			        };
+			        app.helper.showProgress();
+			        app.request.get({data: params}).then(function (error, data) {
+			            if ( data.success ) {
+			                var data = data.data;
+			                if ( data != null ) {
+			                    $("[name='assigned_user_id']").val(data.assigned_user_id).trigger("change");
+			                }
+			            }
+			            app.helper.hideProgress();
+			        });
+				}
+			}
 
 			if(typeof element.data('autofill') != 'undefined') {
 				thisInstance.autoFillElement = element;

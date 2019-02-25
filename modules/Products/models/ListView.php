@@ -75,6 +75,22 @@ class Products_ListView_Model extends Vtiger_ListView_Model {
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
 
+		// echo $listQuery;die();
+		//--Henry: para buscar productos desde incidencias
+		if ( $this->get('src_module') == 'HelpDesk' && !empty($this->get('alumno_seccion')) ) {
+			if ( strpos($listQuery, "vtiger_productcf") === false ) {
+				$aux = explode("WHERE", $listQuery);
+				$aux[0] = $aux[0]." INNER JOIN vtiger_productcf ON vtiger_products.productid = vtiger_productcf.productid ";
+				$listQuery = implode(" WHERE ", $aux);
+			}
+			$listQuery .= " AND productcategory IN ('".$this->get('alumno_nivel')."','Todos') "; // nivel
+			$listQuery .= " AND cf_874 IN ('".$this->get('alumno_grado')."', 'Todos') "; // grado
+			$listQuery .= " AND cf_876 IN ('".$this->get('alumno_seccion')."', 'Todos') "; // seccion
+			$listQuery .= " AND cf_880 IN ('".$this->get('alumno_anio')."', 'Todos') "; // año
+			$listQuery .= " AND ( (discontinued = '1' AND start_date <= CURDATE())"; // profesor activo y fecha de activación menor igual a actualidad
+			$listQuery .= " OR (discontinued = '0' AND expiry_date >= CURDATE()) )"; // profesor inactivo y fecha de inactivación sea mayor a la actual
+		// echo $listQuery;die();
+		}
 		if(!empty($orderBy) && $orderByFieldModel) {
 			$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
 		} else if(empty($orderBy) && empty($sortOrder)){
@@ -94,7 +110,6 @@ class Products_ListView_Model extends Vtiger_ListView_Model {
 				&& ($sourceModule !== 'Products' && $sourceField !== 'productsList')) {
 			$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
 		}
-
 		$listResult = $db->pquery($listQuery, array());
 		$listViewRecordModels = array();
 		$listViewEntries =  $listViewContoller->getListViewRecords($moduleFocus,$moduleName, $listResult);
@@ -203,7 +218,22 @@ class Products_ListView_Model extends Vtiger_ListView_Model {
 		if($this->getModule()->get('name') == 'Calendar'){
 			$listQuery .= ' AND activitytype <> "Emails"';
 		}
-
+		// echo $listQuery;die();
+		//--Henry: para buscar productos desde incidencias
+		if ( $this->get('src_module') == 'HelpDesk' && !empty($this->get('alumno_seccion')) ) {
+			if ( strpos($listQuery, "vtiger_productcf") === false ) {
+				$aux = explode("WHERE", $listQuery);
+				$aux[0] = $aux[0]." INNER JOIN vtiger_productcf ON vtiger_products.productid = vtiger_productcf.productid ";
+				$listQuery = implode(" WHERE ", $aux);
+			}
+			$listQuery .= " AND productcategory IN ('".$this->get('alumno_nivel')."','Todos') "; // nivel
+			$listQuery .= " AND cf_874 IN ('".$this->get('alumno_grado')."', 'Todos') "; // grado
+			$listQuery .= " AND cf_876 IN ('".$this->get('alumno_seccion')."', 'Todos') "; // seccion
+			$listQuery .= " AND cf_880 IN ('".$this->get('alumno_anio')."', 'Todos') "; // año
+			$listQuery .= " AND ( (discontinued = '1' AND start_date <= CURDATE())"; // profesor activo y fecha de activación menor igual a actualidad
+			$listQuery .= " OR (discontinued = '0' AND expiry_date >= CURDATE()) )"; // profesor inactivo y fecha de inactivación sea mayor a la actual
+		// echo $listQuery;die();
+		}
 		$listResult = $db->pquery($listQuery, array());
 		return $db->query_result($listResult, 0, 'count');
 	}

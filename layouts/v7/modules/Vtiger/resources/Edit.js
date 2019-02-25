@@ -353,6 +353,23 @@ Vtiger_Index_Js("Vtiger_Edit_Js",{
 		app.helper.registerLeavePageWithoutSubmit(this.getForm());
 		app.helper.registerModalDismissWithoutSubmit(this.getForm());
 	},
+
+    iniciar : function(){
+        // fechas
+        if ( (this.getParameterByName("record") == '' || this.getParameterByName("record") == undefined) && ($("[name='record']").val() == '' || $("[name='record']").val() == undefined) ) {
+            var fechas = [
+                "almsecc_tks_ano",
+                "cf_880", // productos
+                "apdalm_tks_ano",
+            ];
+            console.log(fechas);
+            $.each(fechas, function(k,v){
+                // var format = _USERMETA.date_format;
+                var f = moment().format( "YYYY" );
+                $("[name='"+v+"']").val( f );
+            });
+        }
+    },
 	
     registerEvents: function(callParent) {
         //donot call parent if registering Events from overlay.
@@ -366,6 +383,7 @@ Vtiger_Index_Js("Vtiger_Edit_Js",{
         this.registerImageChangeEvent();
         this.registerValidation();
         app.event.trigger('post.editView.load', editViewContainer);
-		this.registerPageLeaveEvents();
+        this.registerPageLeaveEvents();
+		this.iniciar();
     }
 });

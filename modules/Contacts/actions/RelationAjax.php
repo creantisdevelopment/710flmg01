@@ -15,8 +15,9 @@ class Contacts_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 		$recordModel = Vtiger_Record_Model::getInstanceById($request->get('id'), $moduleName);
 		$moduleModel = $recordModel->getModule();
 		$autoFillData = $moduleModel->getAutoFillModuleAndField($moduleName);
-		if ($autoFillData) {
-			foreach ($autoFillData as $data) {
+		
+		if($autoFillData) {
+			foreach($autoFillData as $data) {
 				$autoFillModule = $data['module'];
 				$autoFillFieldName = $data['fieldname'];
 				$autofillRecordId = $recordModel->get($autoFillFieldName);
@@ -24,19 +25,20 @@ class Contacts_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 				$autoFillNameArray = getEntityName($autoFillModule, $autofillRecordId);
 				$autoFillName = $autoFillNameArray[$autofillRecordId];
 
-				$resultData[] = array('id' => $request->get('id'),
-					'name' => decode_html($recordModel->getName()),
-					'parent_id' => array('name' => decode_html($autoFillName),
-										'id' => $autofillRecordId,
-										'module' => $autoFillModule));
+				$resultData[] = array(	'id'		=> $request->get('id'), 
+										'name'		=> decode_html($recordModel->getName()),
+										'parent_id'	=> array(	'id' => $autofillRecordId,
+																'name' => decode_html($autoFillName),
+																'module' => $autoFillModule));
 			}
 
-			$resultData['name'] = decode_html($recordModel->getName());
 			$result[$request->get('id')] = $resultData;
+
 		} else {
-			$resultData = array('id' => $request->get('id'),
-				'name' => decode_html($recordModel->getName()),
-				'info' => $recordModel->getRawData());
+			$resultData = array('id'	=> $request->get('id'), 
+								'name'	=> decode_html($recordModel->getName()),
+								'module'	=> $moduleName,
+								'info'	=> $recordModel->getData());
 			$result[$request->get('id')] = $resultData;
 		}
 

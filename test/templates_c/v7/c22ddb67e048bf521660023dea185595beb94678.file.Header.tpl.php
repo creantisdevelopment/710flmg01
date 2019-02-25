@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.7, created on 2019-02-18 22:40:04
+<?php /* Smarty version Smarty-3.1.7, created on 2019-02-21 19:27:59
          compiled from "C:\wamp\www\710fleming01\includes\runtime/../../layouts/v7\modules\Vtiger\Header.tpl" */ ?>
 <?php /*%%SmartyHeaderCode:156205c6b344422ee35-24488351%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,7 +7,7 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'c22ddb67e048bf521660023dea185595beb94678' => 
     array (
       0 => 'C:\\wamp\\www\\710fleming01\\includes\\runtime/../../layouts/v7\\modules\\Vtiger\\Header.tpl',
-      1 => 1548189820,
+      1 => 1550777276,
       2 => 'file',
     ),
   ),
@@ -15,6 +15,8 @@ $_valid = $_smarty_tpl->decodeProperties(array (
   'function' => 
   array (
   ),
+  'version' => 'Smarty-3.1.7',
+  'unifunc' => 'content_5c6b34443ac54',
   'variables' => 
   array (
     'PAGETITLE' => 0,
@@ -35,8 +37,6 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'LANGUAGE' => 0,
   ),
   'has_nocache_code' => false,
-  'version' => 'Smarty-3.1.7',
-  'unifunc' => 'content_5c6b34443ac54',
 ),false); /*/%%SmartyHeaderCode%%*/?>
 <?php if ($_valid && !is_callable('content_5c6b34443ac54')) {function content_5c6b34443ac54($_smarty_tpl) {?>
 <!DOCTYPE html><html><head><title><?php echo vtranslate($_smarty_tpl->tpl_vars['PAGETITLE']->value,$_smarty_tpl->tpl_vars['QUALIFIED_MODULE']->value);?>
@@ -68,6 +68,7 @@ $_smarty_tpl->tpl_vars['cssModel']->_loop = true;
 ",'currencyGroupingPattern' : "<?php echo $_smarty_tpl->tpl_vars['CURRENT_USER_MODEL']->value->get('currency_grouping_pattern');?>
 ", 'truncateTrailingZeros' : "<?php echo $_smarty_tpl->tpl_vars['CURRENT_USER_MODEL']->value->get('truncate_trailing_zeros');?>
 ", 'roleid':"<?php echo $_smarty_tpl->tpl_vars['CURRENT_USER_MODEL']->value->get('roleid');?>
+", 'date_format':"<?php echo $_smarty_tpl->tpl_vars['CURRENT_USER_MODEL']->value->get('date_format');?>
 "};<?php }?></script></head><?php $_smarty_tpl->tpl_vars['CURRENT_USER_MODEL'] = new Smarty_variable(Users_Record_Model::getCurrentUserModel(), null, 0);?><body data-skinpath="<?php echo Vtiger_Theme::getBaseThemePath();?>
 " data-language="<?php echo $_smarty_tpl->tpl_vars['LANGUAGE']->value;?>
 " data-user-decimalseparator="<?php echo $_smarty_tpl->tpl_vars['CURRENT_USER_MODEL']->value->get('currency_decimal_separator');?>

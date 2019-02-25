@@ -1076,7 +1076,7 @@ fuera de Vtiger.',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Para utilizar <b>%s</b>, le recomendamos cambiar al nuevo aspecto visual.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'Cuando se elimina un usuario, el usuario será marcado como "inactivo" y no se le podrán asignar nuevos registros ni tampoco podrá iniciar sesión. ¿Estás seguro que quieres borrarlo?',
 
-	'LBL_DUPLICATES' => 'duplicados',
+	'LBL_DUPLICATES' => 'Duplicados',
 	'LBL_DUPLICATES_DETECTED' => 'Duplicado(s) detectado(s)',
 	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Esto%s no se pueden guardar ya que existe o existen duplicado%s en VTiger con los mismos valores para %s.',
 	'LBL_VTIGER_NOTIFICATION' => 'Mensaje de: Notificaciones del sistema Vtiger',

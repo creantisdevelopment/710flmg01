@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_almsecc</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_almsecc` (`almseccid` int(11) NOT NULL, `almseccno` varchar(100) default NULL, `almsecc_tks_alumno` varchar(100) default NULL ,`almsecc_tks_codigoalumno` varchar(20) default NULL ,`almsecc_tks_nivel` varchar(100) default NULL ,`almsecc_tks_grado` varchar(100) default NULL ,`almsecc_tks_seccion` varchar(100) default NULL ,`almsecc_tks_ano` int(11) default NULL ,`almsecc_tks_estado` varchar(100) default NULL   , PRIMARY KEY (`almseccid`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_almsecccf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_almsecccf` (`almseccid` int(11) NOT NULL, PRIMARY KEY (`almseccid`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>

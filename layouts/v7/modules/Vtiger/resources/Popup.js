@@ -38,6 +38,50 @@ jQuery.Class("Vtiger_Popup_Js",{
 	multiSelect : false,
 	relatedParentModule : false,
 	relatedParentRecord : false,
+	//-Henry solo para buscar productos desde incidencias
+	apoderado_id : false,
+	alumno_id : false,
+	alumno_nivel : false,
+	alumno_grado : false,
+	alumno_seccion : false,
+	alumno_anio : false,
+	getApoderadoId : function(){
+		if(this.apoderado_id == false){
+			this.apoderado_id = jQuery('#apoderado_id',this.getPopupPageContainer()).val();
+		}
+		return this.apoderado_id;
+	},
+	getAlumnoId : function(){
+		if(this.alumno_id == false){
+			this.alumno_id = jQuery('#alumno_id',this.getPopupPageContainer()).val();
+		}
+		return this.alumno_id;
+	},
+	getAlumnoNivel : function(){
+		if(this.alumno_nivel == false){
+			this.alumno_nivel = jQuery('#alumno_nivel',this.getPopupPageContainer()).val();
+		}
+		return this.alumno_nivel;
+	},
+	getAlumnoGrado : function(){
+		if(this.alumno_grado == false){
+			this.alumno_grado = jQuery('#alumno_grado',this.getPopupPageContainer()).val();
+		}
+		return this.alumno_grado;
+	},
+	getAlumnoSeccion : function(){
+		if(this.alumno_seccion == false){
+			this.alumno_seccion = jQuery('#alumno_seccion',this.getPopupPageContainer()).val();
+		}
+		return this.alumno_seccion;
+	},
+	getAlumnoAnio : function(){
+		if(this.alumno_anio == false){
+			this.alumno_anio = jQuery('#alumno_anio',this.getPopupPageContainer()).val();
+		}
+		return this.alumno_anio;
+	},
+	//--
 
     getView : function(){
 	    var view = jQuery('#view',this.getPopupPageContainer()).val();
@@ -196,6 +240,15 @@ jQuery.Class("Vtiger_Popup_Js",{
 			params['multi_select'] = true;
 		}
         params['relationId'] = this.getRelationId();
+        //-- Henry: solo para Buscar productos desde Incidencias:
+        if ( this.getSourceModule() == 'HelpDesk' && this.getModuleName() == 'Products' ) {
+        	params['apoderado_id'] =  this.getApoderadoId();
+        	params['alumno_id'] =  this.getAlumnoId();
+        	params['alumno_nivel'] =  this.getAlumnoNivel();
+        	params['alumno_grado'] =  this.getAlumnoGrado();
+        	params['alumno_seccion'] =  this.getAlumnoSeccion();
+        	params['alumno_anio'] =  this.getAlumnoAnio();
+        }
 
 		// Carry forward meta (LineItem Pricebook Popup > Search)
 		var getUrl = this.getPopupPageContainer().find('#getUrl');

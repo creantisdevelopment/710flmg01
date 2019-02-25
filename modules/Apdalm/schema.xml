@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_apdalm</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_apdalm` (`apdalmid` int(11) NOT NULL, `apdalmno` varchar(100) default NULL, `apdalm_tks_apoderado` varchar(100) default NULL ,`apdalm_tks_alumno` varchar(100) default NULL ,`apdalm_tks_estado` varchar(100) default NULL ,`apdalm_tks_tipodevinculo` varchar(100) default NULL ,`apdalm_tks_nrodocumentoapodera` varchar(20) default NULL ,`apdalm_tks_codigoalumno` varchar(30) default NULL ,`apdalm_tks_ano` int(11) default NULL   , PRIMARY KEY (`apdalmid`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_apdalmcf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_apdalmcf` (`apdalmid` int(11) NOT NULL, PRIMARY KEY (`apdalmid`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>

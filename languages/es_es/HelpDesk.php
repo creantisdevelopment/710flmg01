@@ -46,8 +46,8 @@ $languageStrings = array(
 	'LBL_STATUS'                   => 'Estado',
 	'LBL_SEVERITY'                 => 'Urgencia',
 	'LBL_CONVERT_FAQ'              => 'Convertir en FAQ',
-	'LBL_RELATED_TO'               => 'Relacionado con',
-    'Related To'                   => 'En relación con',
+	'LBL_RELATED_TO'               => 'Apoderado',
+    'Related To'                   => 'Apoderado',
 
 	//added to support i18n in ticket mails
 	'Hi' => 'Hola',
@@ -94,7 +94,7 @@ $languageStrings = array(
 	'Ticket ID' => 'Nº de Parte',
 	'LBL_TICKET_NUMBER' => 'Número de entradas',
 
-  'Contact Name' => 'Nombre De Contacto',
+  'Contact Name' => 'Nombre De Alumno',
   'LBL_ADD_DOCUMENT' => 'Añadir Documento',
 	'LBL_OPEN_TICKETS' => 'Incidencias Abiertas',
 	'LBL_CREATE_TICKET' => 'Crear Incidencia',
