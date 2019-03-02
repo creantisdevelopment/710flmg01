@@ -2,7 +2,7 @@
 
 
 //This is the sharing access privilege file
-$defaultOrgSharingPermission=array('2'=>2,'4'=>2,'6'=>2,'7'=>2,'9'=>3,'13'=>2,'16'=>3,'20'=>2,'21'=>2,'22'=>2,'23'=>2,'26'=>2,'8'=>2,'14'=>2,'34'=>2,'35'=>3,'37'=>2,'38'=>2,'39'=>2,'41'=>2,'42'=>2,'43'=>2,'44'=>2,'18'=>2,'10'=>2,'52'=>3,'53'=>3,);
+$defaultOrgSharingPermission=array('2'=>2,'4'=>2,'6'=>2,'7'=>2,'9'=>3,'13'=>2,'16'=>3,'20'=>2,'21'=>2,'22'=>2,'23'=>2,'26'=>2,'8'=>2,'14'=>2,'34'=>2,'35'=>3,'37'=>2,'38'=>2,'39'=>2,'41'=>2,'42'=>2,'43'=>2,'44'=>2,'18'=>2,'10'=>2,'52'=>3,'53'=>3,'54'=>3,'55'=>3,);
 
 $related_module_share=array(2=>array(6,),13=>array(6,),20=>array(6,2,),22=>array(6,2,20,),23=>array(6,22,),);
 
@@ -113,5 +113,13 @@ $Apdalm_share_write_permission=array('ROLE'=>array(),'GROUP'=>array());
 $Almsecc_share_read_permission=array('ROLE'=>array(),'GROUP'=>array());
 
 $Almsecc_share_write_permission=array('ROLE'=>array(),'GROUP'=>array());
+
+$Temas_share_read_permission=array('ROLE'=>array(),'GROUP'=>array());
+
+$Temas_share_write_permission=array('ROLE'=>array(),'GROUP'=>array());
+
+$Acciones_share_read_permission=array('ROLE'=>array(),'GROUP'=>array());
+
+$Acciones_share_write_permission=array('ROLE'=>array(),'GROUP'=>array());
 
 ?>

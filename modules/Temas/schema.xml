@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_temas</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_temas` (`temasid` int(11) NOT NULL, `temasno` varchar(100) default NULL, `temas_tks_regla` varchar(200) default NULL ,`temas_tks_tema` varchar(100) default NULL ,`temas_tks_subtema` varchar(100) default NULL ,`temas_tks_rolresponsable` varchar(100) default NULL   , PRIMARY KEY (`temasid`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_temascf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_temascf` (`temasid` int(11) NOT NULL, PRIMARY KEY (`temasid`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>

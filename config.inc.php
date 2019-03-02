@@ -79,12 +79,12 @@ $dbconfigoption['ssl'] = false;
 
 $host_name = $dbconfig['db_hostname'];
 
-$site_URL = 'http://localhost:82/710fleming01/';
+$site_URL = 'http://192.168.1.107/710fleming01/';
 
 // url for customer portal (Example: http://vtiger.com/portal)
 $PORTAL_URL = $site_URL.'/customerportal';
 // root directory path
-$root_directory = 'C:\wamp\www\710fleming01/';
+$root_directory = '/var/www/html/710fleming01/';
 
 // cache direcory path
 $cache_dir = 'cache/';

@@ -927,16 +927,17 @@ Vtiger.Class('Vtiger_Index_Js', {
 		if(params.multi_select) {
 				isMultiple = true;
 		}
-
+		//-- Creantis - Henry
 		console.log("parentElem", parentElem, "params", params)
 		if ( app.getModuleName() == 'HelpDesk' && params.module == 'Products' ) {
 			params.apoderado_id = $("[name='parent_id']").val();
 			params.alumno_id = $("[name='contact_id']").val();
-			if ( $("[name='contact_id']").data("json") != undefined ) {
-				params.alumno_nivel = $("[name='contact_id']").data("json").almsecc_tks_nivel;
-				params.alumno_grado = $("[name='contact_id']").data("json").almsecc_tks_grado;
-				params.alumno_seccion = $("[name='contact_id']").data("json").almsecc_tks_seccion;
-				params.alumno_anio = $("[name='contact_id']").data("json").almsecc_tks_ano;
+			if ( $("[name='contact_id']").data("json") != undefined && !thisInstance.isEmpty($("[name='contact_id']").data("json").almsecc) ) {
+				var almsecc = $("[name='contact_id']").data("json").almsecc;
+				params.alumno_nivel = almsecc.almsecc_tks_nivel;
+				params.alumno_grado = almsecc.almsecc_tks_grado;
+				params.alumno_seccion = almsecc.almsecc_tks_seccion;
+				params.alumno_anio = almsecc.almsecc_tks_ano;
 			}
 		}
 
@@ -1250,6 +1251,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 	},
 
 	searchModuleNames : function(params) {
+		var thisInstance = this;
 		var aDeferred = jQuery.Deferred();
 
 		if(typeof params.module == 'undefined') {
@@ -1272,6 +1274,18 @@ Vtiger.Class('Vtiger_Index_Js', {
 				if(editRecordId) {
 					params.base_record = editRecordId;
 				}
+			}
+		}
+		//--Creantis - Henry: búsqueda personalizada desde incidencias a productos
+		if ( app.getModuleName() == 'HelpDesk' && params.search_module == 'Products' ) {
+			params.apoderado_id = $("[name='parent_id']").val();
+			params.alumno_id = $("[name='contact_id']").val();
+			if ( $("[name='contact_id']").data("json") != undefined && !thisInstance.isEmpty($("[name='contact_id']").data("json").almsecc) ) {
+				var almsecc = $("[name='contact_id']").data("json").almsecc;
+				params.alumno_nivel = almsecc.almsecc_tks_nivel;
+				params.alumno_grado = almsecc.almsecc_tks_grado;
+				params.alumno_seccion = almsecc.almsecc_tks_seccion;
+				params.alumno_anio = almsecc.almsecc_tks_ano;
 			}
 		}
 		app.request.get({data:params}).then(
@@ -1530,6 +1544,14 @@ Vtiger.Class('Vtiger_Index_Js', {
 		}
 	},
 
+	isEmpty :  function(obj) {
+	    for(var key in obj) {
+	        if(obj.hasOwnProperty(key))
+	            return false;
+	    }
+	    return true;
+	},
+
 	registerPostReferenceEvent : function(container) {
 		var thisInstance = this;
 
@@ -1547,6 +1569,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 					mod = mod.substring(0, mod.length-1);
 					if ( v.info[mod+"id"] ) {
 						obj["id"] = v.info[mod+"id"];
+					} else if ( v.info[mod+"sid"] ) {
+						obj["id"] = v.info[mod+"sid"];
 					} else {
 						obj["id"] = v.info["id"];
 					}
@@ -1621,13 +1645,13 @@ Vtiger.Class('Vtiger_Index_Js', {
 			            if ( data.success ) {
 			                var data = data.data;
 			                var alumno_seccion = data.alumno_seccion;
-			                if ( alumno_seccion.id != null ) {
-			                    if ($("[name='contact_id']").data('json') == undefined) {
-			                    	$("[name='contact_id']").attr('data-json',JSON.stringify(alumno_seccion));
-			                    } else {
-			                    	$("[name='contact_id']").data('json', alumno_seccion);
-			                    }
-			                } else {
+		                	var secc = alumno_seccion.almsecc;
+		                    if ($("[name='contact_id']").data('json') == undefined) {
+		                    	$("[name='contact_id']").attr('data-json',JSON.stringify(alumno_seccion));
+		                    } else {
+		                    	$("[name='contact_id']").data('json', alumno_seccion);
+		                    }
+			                if ( thisInstance.isEmpty(secc) ) {
 			                	app.helper.showAlertNotification({'message': "El alumno no tiene Sección!"});
 			                }
 			            }
@@ -1669,6 +1693,63 @@ Vtiger.Class('Vtiger_Index_Js', {
 			                var data = data.data;
 			                if ( data != null ) {
 			                    $("[name='assigned_user_id']").val(data.assigned_user_id).trigger("change");
+			                }
+			            }
+			            app.helper.hideProgress();
+			        });
+				}
+				if ( element.attr("name") == 'cf_942' ) { // Temas
+					var params = {
+			            module: 'Vtiger',
+			            source_module: 'Temas',
+			            action: 'GetDataTemas',
+			            record: obj.id,
+			            parent_id: $("[name='parent_id']").val(),
+			            contact_id: $("[name='contact_id']").val(),
+			            product_id: $("[name='product_id']").val(),
+			            accion_selected: $("[name='cf_852']").val()
+			        };
+			        app.helper.showProgress();
+                	var elm_acciones = $("[name='cf_852']");
+                	// $.accion_selected = elm_acciones.val();
+			        app.request.get({data: params}).then(function (error, data) {
+			            if ( data.success ) {
+			                var data = data.data;
+			                console.log("data", data, "acciones", data.acciones);
+			                if ( data != null ) {
+			                    $("[name='cf_900']").val(data.cf_900).trigger("change");
+			                    $("[name='ticketcategories']").val(data.ticketcategories).trigger("change");
+			                }
+			                if ( data.acciones != null ) {
+			                	console.log("$.accion_selected", $.accion_selected)
+			                	$("[name='cf_852'] option").each(function(k,v){
+						            $(v).remove();
+						        });
+						        elm_acciones.append(new Option('Selecciona una Opción', ''));
+			                	var acciones = data.acciones;
+			                	var arr_acciones = new Array();
+			                	var n_acciones = acciones.length;
+			                	$.acciones_user = new Object();
+			                	$.each(acciones, function(k,v){
+			                		if ( v.user_accion != null ) {
+			                			$.acciones_user[v.acciones_tks_accion] = v.user_accion.userid;
+			                		}
+			                		arr_acciones.push(v.acciones_tks_titulo);
+							        var value = v.acciones_tks_titulo;
+							        console.log("value == $.accion_selected", value == $.accion_selected, value , $.accion_selected)
+				                    // if ( value == $.accion_selected || n_acciones == 1 ) {
+				                    if ( n_acciones == 1 ) {
+				                        elm_acciones.append(`<option value="`+value+`" selected>`+value+`</option>`);
+				                    } else{
+				                        elm_acciones.append(new Option(value, value));
+				                    }
+			                	});
+			                	if ( n_acciones == 0 ) {
+			                		$.each($.acciones, function(k,v){
+			                			elm_acciones.append(new Option(v, v));
+			                		});
+			                	}
+			                	elm_acciones.trigger("change");
 			                }
 			            }
 			            app.helper.hideProgress();

@@ -1096,4 +1096,5 @@ if(empty($adb)) {
 	$adb->connect();
 }
 //$adb->database->setFetchMode(ADODB_FETCH_BOTH);
+// $adb->setDebug(true);
 ?>

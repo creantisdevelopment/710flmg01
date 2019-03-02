@@ -355,17 +355,40 @@ class Vtiger_Functions {
 					$metainfo = self::getEntityModuleInfo($module);
 				}
 
-				$table = $metainfo['tablename'];
+				//--Creantis - Henry: para agregar un CF como label de campo relacional-
+				$tables = explode(",", $metainfo['tablename']);
+				$other_tables = array();
+				if ( count($tables) > 1 ){
+					$table = $tables[0];
+					unset($tables[0]);
+					$other_tables = $tables;
+				}
+				else {
+					$table = $metainfo['tablename'];
+				}
+				//------------------------------------------------------------------
 				$idcolumn = $metainfo['entityidfield'];
 				$columns  = explode(',', $metainfo['fieldname']);
-
+				
 				// NOTE: Ignore field-permission check for non-admin (to compute record label).
 				$columnString = count($columns) < 2? $columns[0] :
 					sprintf("concat(%s)", implode(",' ',", $columns));
 
-				$sql = sprintf('SELECT '. implode(',',$columns).', %s AS id FROM %s WHERE %s IN (%s)',
-						 $idcolumn, $table, $idcolumn, generateQuestionMarks($ids));
-
+				$sql = sprintf('SELECT '. implode(',',$columns).', %s.%s AS id FROM %s WHERE %s.%s IN (%s)', $table,
+						 $idcolumn, $table, $table, $idcolumn, generateQuestionMarks($ids));
+				
+				//--Creantis - Henry: para agregar un CF como label de campo relacional-
+				if (  !empty($other_tables) ) {
+					$sql_aux = explode("WHERE", $sql);
+					$join = '';
+					foreach ($other_tables as $tab) {
+						$join .= " LEFT JOIN $tab ON $table.$idcolumn = $tab.$idcolumn ";
+					}
+					$sql_aux[0] = $sql_aux[0] . $join;
+					$sql = implode(" WHERE ", $sql_aux);
+				}
+				//------------------------------------------------------------------
+				
 				$result = $adb->pquery($sql, $ids);
 
 				if($result) {

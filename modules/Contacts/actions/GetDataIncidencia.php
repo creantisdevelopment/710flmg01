@@ -20,13 +20,15 @@ class Contacts_GetDataIncidencia_Action extends Vtiger_IndexAjax_View {
 			$data_alumno_seccion = array();
 			if ( !empty($record) && intval($record) != 0 ) {
 				$alm = Vtiger_Record_Model::getInstanceById($record, 'Contacts')->getData();
+				$alm = array_map("decode_html", $alm);
 				$data_alumno_seccion = $this->getAlumnoSeccion($record);
 				if (!empty($data_alumno_seccion)) {
 					$data_alumno_seccion['fullname'] = $alm['firstname']." ".$alm['lastname'];
 					$data_alumno_seccion = array_map("decode_html", $data_alumno_seccion);
 				}
+				$alm['almsecc'] = $data_alumno_seccion;
 			}
-			$response->setResult(array('success'=>true, 'data'=> array("alumno_seccion" => $data_alumno_seccion) ));
+			$response->setResult(array('success'=>true, 'data'=> array("alumno_seccion" => $alm) ));
 
 		} else {
 			$response->setResult(array('success'=>false, 'message'=>vtranslate('LBL_PERMISSION_DENIED')));

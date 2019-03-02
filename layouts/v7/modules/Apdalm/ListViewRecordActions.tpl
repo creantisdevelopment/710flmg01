@@ -26,7 +26,7 @@
 		</span>
     {/if}
 	<span>
-		<a href="index.php?module=HelpDesk&view=Edit&source_module=Apdalm&source_id={$LISTVIEW_ENTRY->getId()}&app=SUPPORT" class="fa icon action fa-check-square-o" title="Crear Incidencia"></a>
+		<a href="index.php?module=HelpDesk&view=Edit&source_module=Apdalm&source_id={$LISTVIEW_ENTRY->getId()}&app=SUPPORT" class="fa icon action fa-check-square-o" title="Crear Incidencia" target="_blank"></a>
 	</span>
     <span class="more dropdown action">
         <span href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">

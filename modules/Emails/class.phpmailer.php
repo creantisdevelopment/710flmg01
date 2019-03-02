@@ -599,8 +599,8 @@ class PHPMailer {
    * @return void
    */
   public function IsSMTP() {
-    // $this->Mailer = 'smtp';
-    $this->Mailer = 'mail';
+    $this->Mailer = 'smtp';
+    // $this->Mailer = 'mail';
   }
 
   /**

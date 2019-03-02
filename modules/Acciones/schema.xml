@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_acciones</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_acciones` (`accionesid` int(11) NOT NULL, `accionesno` varchar(100) default NULL, `acciones_tks_tema` int(11) default NULL ,`acciones_tks_accion` varchar(100) default NULL ,`acciones_tks_rolresponsable` varchar(100) default NULL   , PRIMARY KEY (`accionesid`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_accionescf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_accionescf` (`accionesid` int(11) NOT NULL, PRIMARY KEY (`accionesid`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>

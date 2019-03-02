@@ -1,0 +1,86 @@
+[25-Feb-2019 19:47:02 UTC] SELECT vtiger_crmentity.crmid, vtiger_crmentity.description, vtiger_crmentity.smownerid, vtiger_seactivityrel.crmid AS setype,vtiger_activity.*, acf.cf_902 FROM vtiger_activity 
+		INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_activity.activityid 
+		LEFT JOIN vtiger_activitycf acf ON vtiger_activity.activityid = acf.activityid 
+		INNER JOIN vtiger_activity_reminder ON vtiger_activity.activityid=vtiger_activity_reminder.activity_id 
+		LEFT OUTER JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid 
+		WHERE DATE_FORMAT(vtiger_activity.date_start,'%Y-%m-%d, %H:%i:%s') >= '2019-02-25' AND vtiger_crmentity.crmid != 0 AND 
+		(vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held','Cancelled')) 
+		AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred', 'Cancelled'))
+		AND (acf.cf_906 = 'NO' OR acf.cf_906 = '') AND vtiger_activity_reminder.reminder_time != 0 
+		GROUP BY vtiger_activity.activityid
+[25-Feb-2019 19:47:02 UTC] SELECT frequency FROM vtiger_cron_task WHERE name = "SendReminderApoderados" AND handler_file = "cron/SendReminderApoderados.service"
+[25-Feb-2019 19:47:02 UTC] SELECT body FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?
+[25-Feb-2019 19:47:02 UTC] Parent type: 40
+[25-Feb-2019 19:47:02 UTC] Parent content: HelpDesk : 
+
+[25-Feb-2019 19:47:02 UTC] date_start: 2019-02-25
+[25-Feb-2019 19:47:02 UTC] time_start: 21:40:00
+[25-Feb-2019 19:47:02 UTC] DateTimeField Object
+(
+    [datetime:protected] => 2019-02-25 21:40:00
+    [date] => 
+    [time] => 
+)
+
+[25-Feb-2019 19:47:02 UTC] activity_time: 1551112800
+[25-Feb-2019 19:47:02 UTC] curr_time: 1551106022
+[25-Feb-2019 19:47:02 UTC] differenceOfActivityTimeAndCurrentTime: 6778
+[25-Feb-2019 19:47:02 UTC] reminder_time: 7200
+[25-Feb-2019 19:47:02 UTC] reminderFrequency: 1
+[25-Feb-2019 19:47:02 UTC] query_user: SELECT first_name, last_name FROM vtiger_users WHERE vtiger_users.id = ?
+[25-Feb-2019 19:47:02 UTC] query_operador: SELECT a.accountid, a.accountname, a.email1,a.email2 FROM vtiger_troubletickets tt
+						INNER JOIN vtiger_account a on tt.parent_id = a.accountid
+						WHERE tt.ticketid = ? [40]
+[25-Feb-2019 19:47:02 UTC] cont_qry: SELECT * FROM vtiger_cntactivityrel WHERE activityid=?
+[25-Feb-2019 19:47:02 UTC] activity type: Meeting
+[25-Feb-2019 19:47:02 UTC] Array
+(
+    [21] => hcumbicusr@gmail.com
+)
+
+[25-Feb-2019 19:47:02 UTC] upd_query: UPDATE vtiger_activitycf SET cf_906 = 'SI' WHERE activity_id = ?  [39]
+[25-Feb-2019 19:47:02 UTC] 
+
+---
+
+[25-Feb-2019 20:02:33 UTC] SELECT vtiger_crmentity.crmid, vtiger_crmentity.description, vtiger_crmentity.smownerid, vtiger_seactivityrel.crmid AS setype,vtiger_activity.*, acf.cf_902 FROM vtiger_activity 
+		INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_activity.activityid 
+		LEFT JOIN vtiger_activitycf acf ON vtiger_activity.activityid = acf.activityid 
+		INNER JOIN vtiger_activity_reminder ON vtiger_activity.activityid=vtiger_activity_reminder.activity_id 
+		LEFT OUTER JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid 
+		WHERE DATE_FORMAT(vtiger_activity.date_start,'%Y-%m-%d, %H:%i:%s') >= '2019-02-25' AND vtiger_crmentity.crmid != 0 AND 
+		(vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held','Cancelled')) 
+		AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred', 'Cancelled'))
+		AND (acf.cf_906 = 'NO' OR acf.cf_906 = '') AND vtiger_activity_reminder.reminder_time != 0 
+		GROUP BY vtiger_activity.activityid
+[25-Feb-2019 20:02:33 UTC] SELECT frequency FROM vtiger_cron_task WHERE name = "SendReminderApoderados" AND handler_file = "cron/SendReminderApoderados.service"
+[25-Feb-2019 20:02:33 UTC] SELECT body FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?
+[25-Feb-2019 20:02:33 UTC] Parent type: 40
+[25-Feb-2019 20:02:33 UTC] Parent content: HelpDesk : 
+
+[25-Feb-2019 20:02:33 UTC] date_start: 2019-02-25
+[25-Feb-2019 20:02:33 UTC] time_start: 21:40:00
+[25-Feb-2019 20:02:33 UTC] DateTimeField Object
+(
+    [datetime:protected] => 2019-02-25 21:40:00
+    [date] => 
+    [time] => 
+)
+
+[25-Feb-2019 20:02:33 UTC] activity_time: 1551112800
+[25-Feb-2019 20:02:33 UTC] curr_time: 1551106953
+[25-Feb-2019 20:02:33 UTC] differenceOfActivityTimeAndCurrentTime: 5847
+[25-Feb-2019 20:02:33 UTC] reminder_time: 7200
+[25-Feb-2019 20:02:33 UTC] reminderFrequency: 
+[25-Feb-2019 20:02:33 UTC] query_user: SELECT first_name, last_name FROM vtiger_users WHERE vtiger_users.id = ?
+[25-Feb-2019 20:02:33 UTC] query_operador: SELECT a.accountid, a.accountname, a.email1,a.email2 FROM vtiger_troubletickets tt
+						INNER JOIN vtiger_account a on tt.parent_id = a.accountid
+						WHERE tt.ticketid = ? [40]
+[25-Feb-2019 20:02:33 UTC] cont_qry: SELECT * FROM vtiger_cntactivityrel WHERE activityid=?
+[25-Feb-2019 20:02:33 UTC] activity type: Meeting
+[25-Feb-2019 20:02:33 UTC] Array
+(
+    [21] => hcumbicusr@gmail.com
+)
+
+[25-Feb-2019 20:02:33 UTC] upd_query: UPDATE vtiger_activitycf SET cf_906 = 'SI' WHERE activityid = ?  [39]

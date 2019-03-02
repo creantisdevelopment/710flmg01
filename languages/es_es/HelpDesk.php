@@ -48,6 +48,7 @@ $languageStrings = array(
 	'LBL_CONVERT_FAQ'              => 'Convertir en FAQ',
 	'LBL_RELATED_TO'               => 'Apoderado',
     'Related To'                   => 'Apoderado',
+    'Category'                     => 'Subtema',
 
 	//added to support i18n in ticket mails
 	'Hi' => 'Hola',

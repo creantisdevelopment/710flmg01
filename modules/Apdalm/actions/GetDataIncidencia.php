@@ -24,11 +24,13 @@ class Apdalm_GetDataIncidencia_Action extends Vtiger_IndexAjax_View {
 			$data_alumno_seccion = array();
 			if ( !empty($alumno_id) && intval($alumno_id) != 0 ) {
 				$alm = Vtiger_Record_Model::getInstanceById($alumno_id, 'Contacts')->getData();
+				$alm = array_map("decode_html", $alm);
 				$data_alumno_seccion = $this->getAlumnoSeccion($alumno_id);
 				if (!empty($data_alumno_seccion)) {
 					$data_alumno_seccion['fullname'] = $alm['firstname']." ".$alm['lastname'];
 					$data_alumno_seccion = array_map("decode_html", $data_alumno_seccion);
 				}
+				$alm['almsecc'] = $data_alumno_seccion;
 			}
 
 			$apoderado_id = $data['apdalm_tks_apoderado'];
@@ -39,7 +41,7 @@ class Apdalm_GetDataIncidencia_Action extends Vtiger_IndexAjax_View {
 				$data_apoderado = array_map("decode_html", $data_apoderado);
 			}
 
-			$response->setResult(array('success'=>true, 'data'=> array("alumno_seccion" => $data_alumno_seccion, "apoderado" => $data_apoderado) ));
+			$response->setResult(array('success'=>true, 'data'=> array("alumno_seccion" => $alm, "apoderado" => $data_apoderado) ));
 
 		} else {
 			$response->setResult(array('success'=>false, 'message'=>vtranslate('LBL_PERMISSION_DENIED')));

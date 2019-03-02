@@ -125,6 +125,20 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 			container.find('[name="'+addressDetails[key]+'"]').trigger('change');
 		}
 	},
+
+	initAccounts : function(container) {
+		$("#Accounts_editView_fieldName_accountname").attr("readonly",true);
+		$("#Accounts_editView_fieldName_cf_914").on("blur",this.completarNombreCuenta);
+		$("#Accounts_editView_fieldName_cf_916").on("blur",this.completarNombreCuenta);
+		$("#Accounts_editView_fieldName_cf_918").on("blur",this.completarNombreCuenta);
+	},
+
+	completarNombreCuenta : function(e){
+		var nombre = $("#Accounts_editView_fieldName_cf_914").val().trim() + " " +
+					$("#Accounts_editView_fieldName_cf_916").val().trim() + " " +
+					$("#Accounts_editView_fieldName_cf_918").val().trim();
+		$("#Accounts_editView_fieldName_accountname").val(nombre);
+	},
 	
 	/**
 	 * Function which will register basic events which will be used in quick create as well
@@ -133,5 +147,6 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 	registerBasicEvents : function(container) {
 		this._super(container);
 		this.registerEventForCopyingAddress(container);
+		this.initAccounts(container);
 	}
 });

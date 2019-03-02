@@ -1046,6 +1046,8 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	registerAjaxEditEvent : function(){
 		var thisInstance = this;
 		var detailContentsHolder = this.getContentHolder();
+		//-- Creantis-Henry: quitar edición rápida en todos los módulos
+		$(".editAction").remove();
 		detailContentsHolder.on('click','table.detailview-table td.fieldValue .editAction', function(e) {
 			var editedLength = jQuery('table.detailview-table td.fieldValue .ajaxEdited').length;
 			if(editedLength === 0) { 
@@ -1107,6 +1109,9 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	 * @returns {undefined}
 	 */
 	ajaxEditHandling : function(currentTdElement){
+		//-- Creantis-Henry: quitar edición rápida en todos los módulos
+		$(".editAction").remove();
+		return false;
 		var thisInstance = this;
 		var detailViewValue = jQuery('.value',currentTdElement);
 		var editElement = jQuery('.edit',currentTdElement);
@@ -1709,6 +1714,8 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		/**
 		 * Function to handle the ajax edit for summary view fields
 		 */
+		 //-- Creantis-Henry: quitar edición rápida en todos los módulos
+		$(".editAction").remove();
 		summaryViewContainer.on('click','table.summary-table td.fieldValue .editAction', function(e){
 			var currentTarget = jQuery(e.currentTarget);
 			currentTarget.hide();
@@ -3091,6 +3098,8 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		if(typeof contentHolder === 'undefined') {
 			contentHolder = jQuery('.detailview-header');
 		} 
+		//-- Creantis-Henry: quitar edición rápida en todos los módulos
+		$(".editAction").remove();
 
 		contentHolder.on('click','.recordBasicInfo .fieldLabel .editAction', function(e){
 			var currentTarget = jQuery(e.currentTarget);

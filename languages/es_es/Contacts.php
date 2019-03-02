@@ -64,6 +64,8 @@ $languageStrings = array(
 	'Secondary Email' => 'Email secundario',
   'LBL_TRANSACTIONS' => 'Las transacciones',
 
+  'Last Name' => 'Apellido Paterno',
+
 );
 
 $jsLanguageStrings = array(

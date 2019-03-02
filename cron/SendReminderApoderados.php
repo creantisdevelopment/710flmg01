@@ -10,21 +10,30 @@
 //
 // License: LGPL, see LICENSE
 ////////////////////////////////////////////////////
-
+# chdir(dirname(__FILE__). '/../');
 /**
  * PHPMailer - PHP email transport class
  * @package PHPMailer
  * @author Brent R. Matzelle
  * @copyright 2001 - 2003 Brent R. Matzelle
  */
-
+ini_set("error_log", "service_apoderados_log.txt");
 
 //file modified by richie
-require_once('include/utils/utils.php');
+
+require_once 'includes/Loader.php';
+require_once 'include/utils/utils.php';
+
+vimport('includes.http.Request');
+vimport('includes.runtime.Globals');
+vimport('includes.runtime.BaseModel');
+vimport ('includes.runtime.Controller');
+vimport('includes.runtime.LanguageHandler');
+
+require_once("config.php");
 require_once("modules/Emails/class.phpmailer.php");
 require_once("modules/Emails/mail.php");
 require_once('include/logging.php');
-require_once("config.php");
 
 $current_user = Users::getActiveAdminUser();
 // Set the default sender email id
@@ -47,10 +56,8 @@ $log->debug(" invoked SendReminder ");
 if(empty($current_language))
 	$current_language = 'en_us';
 $app_strings = return_application_language($current_language);
-
 //modified query for recurring events -Jag
-$query="SELECT vtiger_crmentity.crmid, vtiger_crmentity.description, vtiger_crmentity.smownerid, vtiger_seactivityrel.crmid AS setype,vtiger_activity.*,vtiger_activity_reminder.reminder_time, acf.cf_902,
-		vtiger_activity_reminder.reminder_apoderado,vtiger_activity_reminder.recurringid FROM vtiger_activity 
+$query="SELECT vtiger_crmentity.crmid, vtiger_crmentity.description, vtiger_crmentity.smownerid, vtiger_seactivityrel.crmid AS setype,vtiger_activity.*, acf.cf_902 FROM vtiger_activity 
 		INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_activity.activityid 
 		LEFT JOIN vtiger_activitycf acf ON vtiger_activity.activityid = acf.activityid 
 		INNER JOIN vtiger_activity_reminder ON vtiger_activity.activityid=vtiger_activity_reminder.activity_id 
@@ -58,21 +65,20 @@ $query="SELECT vtiger_crmentity.crmid, vtiger_crmentity.description, vtiger_crme
 		WHERE DATE_FORMAT(vtiger_activity.date_start,'%Y-%m-%d, %H:%i:%s') >= '".date('Y-m-d')."' AND vtiger_crmentity.crmid != 0 AND 
 		(vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held','Cancelled')) 
 		AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred', 'Cancelled'))
-		AND (vtiger_activity_reminder.reminder_apoderado = 0 OR vtiger_activity_reminder.reminder_apoderado IS NULL) AND vtiger_activity_reminder.reminder_time != 0 
+		AND (acf.cf_906 = 'NO' OR acf.cf_906 = '') AND vtiger_activity_reminder.reminder_time != 0 
 		GROUP BY vtiger_activity.activityid";
 $result = $adb->pquery($query, array());
-
+error_log(print_r($query,true));
 if($adb->num_rows($result) >= 1)
 {
-	//To fetch reminder frequency from cron tasks
-	$reminderFrequencyQuery = 'SELECT frequency FROM vtiger_cron_task WHERE name = "SendReminderApoderados" AND handler_file = "cron/SendReminderApoderados.service"';
-	$reminderResult = $adb->pquery($reminderFrequencyQuery, array());
-	$reminderFrequency = $adb->query_result($reminderResult,0,'frequency');
+	$reminderFrequency = 1; // en segundos tiempo de ejecución del cron (15min)
 
 	// Retriving the reminder email content from emailtemplates table
 	$templateQuery='SELECT body FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?';
+	error_log(print_r("templateQuery: ".$templateQuery,true));
 	$templateResult = $adb->pquery($templateQuery, array('Apoderado', '1'));
 	$eventReminderBody=decode_html($adb->query_result($templateResult,0,'body'));
+	var_dump($eventReminderBody);
 
 	// Retriving the reminder email content from emailtemplates table
 	// $templateQuery='SELECT body FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?';
@@ -111,25 +117,38 @@ if($adb->num_rows($result) >= 1)
 		{
 			$date_start = $result_set['recurringdate'];
 		}
+		error_log(print_r("Parent type: $parent_type",true));
+		error_log(print_r("Parent content: $parent_content",true));
+		error_log(print_r("date_start: $date_start",true));
+		error_log(print_r("time_start: $time_start",true));
 		//code included for recurring events by jaguar ends
 		$date = new DateTimeField("$date_start $time_start");
+		error_log(print_r($date,true));
 		$userFormatedString = $date->getDisplayDate();
 		$timeFormatedString = $date->getDisplayTime();
 		$dBFomatedDate = DateTimeField::convertToDBFormat($userFormatedString);
 		$activity_time = strtotime($dBFomatedDate.' '.$timeFormatedString);
 		$differenceOfActivityTimeAndCurrentTime = ($activity_time - $curr_time);
+		error_log(print_r("activity_time: $activity_time",true));
+		error_log(print_r("curr_time: $curr_time",true));
+		error_log(print_r("differenceOfActivityTimeAndCurrentTime: $differenceOfActivityTimeAndCurrentTime",true));
+		error_log(print_r("reminder_time: $reminder_time",true));
+		error_log(print_r("reminderFrequency: $reminderFrequency",true));
 		if (($differenceOfActivityTimeAndCurrentTime > 0) && (($differenceOfActivityTimeAndCurrentTime <= $reminder_time) || ($differenceOfActivityTimeAndCurrentTime <= $reminderFrequency)))
 		{
 			$log->debug(" InSide REMINDER");
 			$query_user="SELECT first_name, last_name FROM vtiger_users WHERE vtiger_users.id = ?";
 			$user_profesor = $adb->pquery($query_user, array($result_set['smownerid']));
 			$user_profesor = $adb->query_result($user_profesor, 0, 'first_name') . " " . $adb->query_result($user_profesor, 0, 'last_name');
+			error_log(print_r("query_user: $query_user",true));
 
-			$query_user="SELECT a.accountid, a.accountname, a.email1,a.email2 FROM vtiger_troubletickets tt
+			$query_apoderado="SELECT a.accountid, a.accountname, a.email1,a.email2 FROM vtiger_troubletickets tt
 						INNER JOIN vtiger_account a on tt.parent_id = a.accountid
 						WHERE tt.ticketid = ?";
-			$apoderador_result = $adb->pquery($query_user, array($parent_type));
+			error_log(print_r("query_apoderado: $query_apoderado" ." [$parent_type]",true));
+			$apoderador_result = $adb->pquery($query_apoderado, array($parent_type));
 			// $invitedUsersList = array();
+			$nombre_apoderado = '';
 			if($adb->num_rows($apoderador_result)>=1)
 			{
 				while($apoderador_result_row = $adb->fetch_array($apoderador_result))
@@ -138,6 +157,7 @@ if($adb->num_rows($result) >= 1)
 					{
 						$to_addr[$apoderador_result_row['accountid']] = $apoderador_result_row['email1'];
 					}
+					$nombre_apoderado = decode_html($apoderador_result_row['accountname']);
 					// $invitedUsersList[] = $apoderador_result_row['accountid'];
 				}
 			}
@@ -158,6 +178,7 @@ if($adb->num_rows($result) >= 1)
 
 			//get related contact names
 			$cont_qry = "SELECT * FROM vtiger_cntactivityrel WHERE activityid=?";
+			error_log(print_r("cont_qry: $cont_qry",true));
 			$cont_res = $adb->pquery($cont_qry, array($activity_id));
 			$noofrows = $adb->num_rows($cont_res);
 			$cont_id = array();
@@ -175,6 +196,7 @@ if($adb->num_rows($result) >= 1)
 			}
 			$cont_name = trim($cont_name,', ');
 			$result_set['subject'] = decode_html($result_set['subject']);
+			error_log(print_r("activity type: ". $result_set['activitytype'],true));
 			if($result_set['activitytype'] == "Task") {
 				$enddateInOwnerFormat = $enddateTime->getDisplayDate($ownerFocus);
 				$list = $todoReminderBody;				
@@ -187,6 +209,7 @@ if($adb->num_rows($result) >= 1)
 				$subject = vtranslate('Activity Reminder', 'Calendar').': '.$result_set['subject'] . " @ $dateTimeInOwnerFormat";
 			} else { // eventos
 				$list = $eventReminderBody;
+				$list = str_replace('$accounts-accountname$',$nombre_apoderado,$list);
 				$list = str_replace('$events-subject$',decode_html($result_set['subject']),$list);
 				$list = str_replace('$events-description$',decode_html($result_set['description']),$list);
 				$list = str_replace('$events-date_start$', $dateTimeInOwnerFormat.' '.$ownerTimeZone, $list);
@@ -198,28 +221,28 @@ if($adb->num_rows($result) >= 1)
 				$contents = getMergedDescription($list, $activity_id, 'Events',true);
 				$subject = vtranslate('Reminder', 'Calendar').': '.$result_set['subject'] . " @ $dateTimeInOwnerFormat";
 			}
-
+			error_log(print_r("CONTENTS",true));
+			error_log(print_r($contents,true));
+			error_log(print_r($activity_id,true));
+			error_log(print_r($list,true));
+			
 			// $recordModel = Vtiger_Record_Model::getInstanceById($activity_id, 'Calendar');
 			// $recordDetailViewLink = $recordModel->getDetailViewUrl();
 			if(count($to_addr) >=1)
 			{
+				error_log(print_r($to_addr,true));
 				send_email($to_addr,$from,$subject,$contents,$mail_server,$mail_server_username,$mail_server_password);
-				$upd_query = "UPDATE vtiger_activity_reminder SET reminder_apoderado = ? WHERE activity_id = ? ";
-				$upd_params = array(1, $activity_id);
-
-				if($recur_id!=0)
-				{
-					$upd_query = "UPDATE vtiger_activity_reminder SET reminder_apoderado = ? ";
-					$upd_query.=" WHERE activity_id = ? and recurringid =?";
-					array_push($upd_params, $recur_id);
-				}
-
+				$upd_query = "UPDATE vtiger_activitycf SET cf_906 = 'SI' WHERE activityid = ? ";
+				$upd_params = array($activity_id);
+				
+				error_log(print_r("upd_query: ". $upd_query." [$activity_id]",true));
 				$adb->pquery($upd_query, $upd_params);
 
 			}
 		}
 	}
 }
+
 
 /**
  This function is used to assign parameters to the mail object and send it.
@@ -268,6 +291,7 @@ function send_email($to,$from,$subject,$contents,$mail_server,$mail_server_usern
 	$log->info("Mail sending process : From Name & email id => '".$initialfrom."','".$from."'");
 	foreach($to as $pos=>$addr)
 	{
+		error_log(print_r("Para: $addr",true));
 		$mail->AddAddress($addr);// name is optional
 		$log->info("Mail sending process : To Email id = '".$addr."' (set in the mail object)");
 
@@ -286,8 +310,9 @@ function send_email($to,$from,$subject,$contents,$mail_server,$mail_server_usern
 		$mail->Host = $serverinfo[1];
 	}
 	// End
-
+	error_log(print_r($mail,true));
 	$flag = MailSend($mail);
+	error_log(print_r($flag,true));
 	$log->info("After executing the mail->Send() function.");
 }
 
